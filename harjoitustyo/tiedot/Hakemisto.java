@@ -48,8 +48,13 @@ public class Hakemisto extends Tieto implements Sailova<Tieto>, Iterable {
         return sisalto;
     }
 
-    public void sisalto(OmaLista<Tieto> list) {
-        sisalto = list;
+    public void sisalto(OmaLista<Tieto> list) throws IllegalArgumentException {
+
+        if (list != null) {
+            sisalto = list;
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
     public Hakemisto ylihakemisto() {
@@ -95,7 +100,7 @@ public class Hakemisto extends Tieto implements Sailova<Tieto>, Iterable {
     @Override
     public LinkedList<Tieto> hae(String searchTerm) {
 
-        OmaLista<Tieto> found = new OmaLista<>();
+        LinkedList<Tieto> found = new LinkedList<>();
 
         if (searchTerm == null) {
 
@@ -105,7 +110,7 @@ public class Hakemisto extends Tieto implements Sailova<Tieto>, Iterable {
 
             for (Tieto item : sisalto) {
                 if (item.equals(searchTerm)) {
-                    found.lisaa(item);
+                    found.add(item);
                 }
             }
             return found;

@@ -1,5 +1,6 @@
 package harjoitustyo;
 
+import java.util.*;
 import harjoitustyo.apulaiset.In;
 import harjoitustyo.tiedot.Hakemisto;
 
@@ -52,48 +53,39 @@ public class UI {
             System.out.print(output);
 
             // Read user input.
-            String command = In.readString();
-            inputOK = true;
+            String tempInput = In.readString();
+            String[] input = tempInput.split(" ");
 
-            String[] input = command.split(" ");
+            String command = input[0];
+            String[] args = Arrays.copyOfRange(input, 1, input.length);
 
-            switch (input[0]) {
+            switch (command) {
                 case CHANGEDIR:
-                    tulkki.changeDirectory(input);
+                    tulkki.changeDirectory(args);
                     break;
                 case CREATEDIR:
-                    tulkki.createDirectory(input);
+                    tulkki.createDirectory(args);
                     break;
                 case CREATEFILE:
-                    tulkki.createFile(input);
+                    tulkki.createFile(args);
                     break;
                 case RENAME:
-                    tulkki.rename(input);
+                    tulkki.rename(args);
                     break;
                 case LIST:
-                    tulkki.listDirectory(input);
-                    break;
-                case FIND:
-                    tulkki.printRecursive();
-                    break;
-                case COPY:
-                    tulkki.copy(input);
+                    tulkki.listDirectory(args);
                     break;
                 case REMOVE:
-                    tulkki.remove(input);
+                    tulkki.remove(args);
                     break;
                 case EXIT:
                     System.out.println("Shell terminated.");
                     continueExecution = false;
                     break;
                 default:
-                    inputOK = false;
+                    System.out.println(ERROR);
                     break;
 
-            }
-
-            if (!inputOK) {
-                System.out.println(ERROR);
             }
         }
     }
