@@ -15,7 +15,6 @@ public class UI {
      * Class constants
      */
 
-    private final String ERROR = "Error!";
     private final String CHANGEDIR = "cd";
     private final String CREATEDIR = "md";
     private final String CREATEFILE = "mf";
@@ -24,9 +23,10 @@ public class UI {
     private final String LIST = "ls";
     private final String COPY = "cp";
     private final String REMOVE = "rm";
+    private final String ERROR = "Error!";
     private final String EXIT = "exit";
 
-    public void kaynnista() {
+    public void run() {
 
         /**
          * Self-explanatory flag.
@@ -43,7 +43,7 @@ public class UI {
         /**
          * INTO THE LOOP WE GO
          */
-        System.out.println("Welcome to SOS");
+        System.out.println("Welcome to SOS.");
 
         while(continueExecution) {
 

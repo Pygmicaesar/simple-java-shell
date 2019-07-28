@@ -3,6 +3,7 @@ package harjoitustyo;
 import harjoitustyo.tiedot.*;
 import harjoitustyo.omalista.OmaLista;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  * @author Jesse Sydänmäki
@@ -123,7 +124,16 @@ public class Tulkki {
      * List
      */
     public void listDirectory(String[] input) {
-
+        if (input.length == 1) {
+            workingDirectory.sisalto().forEach(ls -> System.out.println(ls));
+        } else if (input.length == 2) {
+            LinkedList<Tieto> haku = workingDirectory.hae(input[1]);
+            if (haku != null && haku.size() > 0)
+                haku.forEach(System.out::println);
+            else if (input[1].equals("*.txt") || input[1].equals("*.gif")) {
+                System.out.println("Error!");
+            }
+        }
     }
 
     /**

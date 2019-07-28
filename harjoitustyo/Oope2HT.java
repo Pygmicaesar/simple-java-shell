@@ -11,6 +11,6 @@ public class Oope2HT {
     public static void main(String[] args) {
 
         UI ui = new UI();
-        ui.kaynnista();
+        ui.run();
     }
 }
