@@ -1,20 +1,17 @@
 package harjoitustyo.tiedot;
 
-import harjoitustyo.iteraattorit.HakemistoIteraattori;
 import harjoitustyo.omalista.OmaLista;
 import harjoitustyo.apulaiset.Sailova;
-
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.*;
 
 /**
- * @author Jesse Sydänmäki (js427665)
+ * @author Jesse Sydänmäki 427665
  * Email: jesse.sydanmaki@tuni.fi
  * Github: Pygmicaesar
  */
 
-public class Hakemisto extends Tieto implements Sailova<Tieto>, Iterable {
-
+public class Hakemisto extends Tieto implements Sailova<Tieto>
+{
     /**
      * Attributes
      */
@@ -25,8 +22,8 @@ public class Hakemisto extends Tieto implements Sailova<Tieto>, Iterable {
     /**
      * Constructors
      */
-
-    // Default constructor
+    
+    // Default contructor
     public Hakemisto() {
         super();
         sisalto = new OmaLista<>();
@@ -49,12 +46,10 @@ public class Hakemisto extends Tieto implements Sailova<Tieto>, Iterable {
     }
 
     public void sisalto(OmaLista<Tieto> list) throws IllegalArgumentException {
-
-        if (list != null) {
+        if (list != null)
             sisalto = list;
-        } else {
+        else
             throw new IllegalArgumentException();
-        }
     }
 
     public Hakemisto ylihakemisto() {
@@ -65,63 +60,44 @@ public class Hakemisto extends Tieto implements Sailova<Tieto>, Iterable {
         ylihakemisto = parentDir;
     }
 
-
     /**
      * Class methods
      */
 
-    /**
+    /** 
      * toString method
-     *
      * @return number of files and subdirectories inside the directory
      */
     @Override
     public String toString() {
-        return super.toString() + (!nimi().toString().equals("/") ? "/ " : " ") + sisalto.size();
+        return super.toString() + "/ " + sisalto.size();
     }
-
-    @Override
-    public boolean equals(String searchTerm) {
-        boolean equal = super.equals(searchTerm);
-        if (equal) {
-            return equal;
-        }
-        return nimi().toString().equals(searchTerm);
-    }
-
+    
     /**
      * Implemented methods
      */
 
     /**
-     * @return OmaLista<Tieto> list of all elements that match the search term
-     * and are of type Tieto
+     * @return list of all elements that match 
+     * the search term and are of type Tieto
      */
     @Override
     public LinkedList<Tieto> hae(String searchTerm) {
-
         LinkedList<Tieto> found = new LinkedList<>();
-
-        if (searchTerm == null) {
-
-            return found;
-
-        } else {
-
-            for (Tieto item : sisalto) {
-                if (item.equals(searchTerm)) {
-                    found.add(item);
-                }
-            }
-            return found;
+        
+        for (Tieto item : sisalto) {
+            if (item.equals(searchTerm))
+                found.add(item);
         }
+        return found;  
     }
+
 
     /**
      * Adds something to a directory.
-     *
-     * @param lisattava
-     * @return boolean based of whether the addition was successful
+     * 
+     * @param lisattava data to add into Hakemisto
+     * @return boolean based on whether the addition was successful
      */
     @Override
     public boolean lisaa(Tieto lisattava) {
@@ -132,20 +108,25 @@ public class Hakemisto extends Tieto implements Sailova<Tieto>, Iterable {
             return false;
         }
     }
-
+    
     /**
-     * Deletes file from directory.
-     *
-     * @param poistettava
+     * Deletes a file from the directory
+     * 
+     * @param poistettava the file to remove
      * @return boolean based on whether something was deleted
      */
     @Override
     public boolean poista(Tieto poistettava) {
-        return sisalto.poista(poistettava) > 0;
-    }
-
-    @Override
-    public Iterator<Tieto> iterator() {
-        return new HakemistoIteraattori<>(this);
+        if (poistettava != null) {
+            for (Tieto item : sisalto) {
+                if (item == poistettava) {
+                    sisalto.remove(poistettava);
+                    return true;
+                }
+            }
+        } else {
+            return false;
+        }
+        return false;
     }
 }

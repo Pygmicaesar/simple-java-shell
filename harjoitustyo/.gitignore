@@ -1,4 +1,4 @@
-# Estetään tavukoodi
-
+# Ignore all files with .class ending
 *.class
-
+/harjoitustyo/nbproject/private/
+/harjoitustyo/build/

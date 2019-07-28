@@ -4,11 +4,10 @@ import harjoitustyo.apulaiset.Syvakopioituva;
 import java.io.*;
 
 /**
- * @author Jesse Sydänmäki (js427665)
+ * @author Jesse Sydänmäki 427665
  * Email: jesse.sydanmaki@tuni.fi
  * Github: Pygmicaesar
  */
-
 
 public class Tiedosto extends Tieto implements Syvakopioituva<Tiedosto> {
 
@@ -28,7 +27,7 @@ public class Tiedosto extends Tieto implements Syvakopioituva<Tiedosto> {
         koko(0);
     }
 
-    // Constructor that takes parameters
+    // Constructor that receives parameters
     public Tiedosto(StringBuilder newName, int newSize) throws IllegalArgumentException {
         super(newName);
         koko(newSize);
@@ -52,7 +51,7 @@ public class Tiedosto extends Tieto implements Syvakopioituva<Tiedosto> {
 
     /**
      * Class methods
-     */
+     */ 
 
     @Override
     public String toString() {
@@ -65,22 +64,32 @@ public class Tiedosto extends Tieto implements Syvakopioituva<Tiedosto> {
 
     @Override
     public Tiedosto kopioi() {
-
         try {
-
+            // Byte-type elements into array - stream.
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+            // Stream that converts object into bytes, which is then attached to
+            // stream.
             ObjectOutputStream oos = new ObjectOutputStream(bos);
 
+            // Write the object into an array in byte format
             oos.writeObject(this);
+
+            // Empty the buffer and close OOS-stream.
             oos.flush();
             oos.close();
 
+            // Liitetään taulukkoon tavuja lukeva syötevirta.
             ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+
+            // Tavut olioksi muuttava virta, joka liittyy taulukosta lukevaan virtaan.
             ObjectInputStream ois = new ObjectInputStream(bis);
 
-            Object copy = ois.readObject();
+            // Kopio saadaan aikaiseksi lukemalla olion tavut taulukosta.
+            Object kopio = ois.readObject();
 
-            return (Tiedosto) copy;
+            // Return the typecast object
+            return (Tiedosto) kopio;
 
         } catch (InvalidClassException ice) {
             ice.printStackTrace();
@@ -89,9 +98,9 @@ public class Tiedosto extends Tieto implements Syvakopioituva<Tiedosto> {
             nse.printStackTrace();
             return null;
         } catch (Exception e) {
-            System.out.println("Time to panic!");
+            System.out.println("EL PANIQUE!");
             e.printStackTrace();
             return null;
-        }
+        }   
     }
 }
