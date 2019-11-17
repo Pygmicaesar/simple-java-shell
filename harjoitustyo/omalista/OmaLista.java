@@ -1,9 +1,7 @@
 package harjoitustyo.omalista;
 
-import java.util.LinkedList;
+import java.util.*;
 import harjoitustyo.apulaiset.Ooperoiva;
-import java.util.Iterator;
-import java.util.Collections;
 
 /**
  * @author Jesse Sydänmäki 427665
@@ -56,14 +54,14 @@ public class OmaLista<E> extends LinkedList<E> implements Ooperoiva<E> {
         int removed = 0;
         
         // Current element being iterated
-        E currentElement = null;
+        E current = null;
 
         Iterator<E> iterator = iterator();
         
         // Use iterator to iterate through the list
         while (iterator.hasNext()) {
-            currentElement = iterator.next();
-            if (currentElement == poistettava) {
+            current = iterator.next();
+            if (current == poistettava) {
                 iterator.remove();
                 removed++;
             }

@@ -1,4 +1,3 @@
-# Ignore all files with .class ending
+# Ignore files ending with .class
 *.class
-/harjoitustyo/nbproject/private/
-/harjoitustyo/build/
+/harjoitustyo/

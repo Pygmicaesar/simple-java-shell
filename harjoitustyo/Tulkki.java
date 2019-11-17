@@ -1,6 +1,5 @@
 package harjoitustyo;
 
-import harjoitustyo.apulaiset.*;
 import harjoitustyo.tiedot.*;
 import java.util.*;
 
@@ -30,33 +29,29 @@ public class Tulkki
     /**
      * Change to a different directory.
      *
-     * @param args array of arguments
+     * @param arg target directory, oh my god why does this not work
      */
-    public void changeDirectory(String[] args) {
+    public void changeDirectory(String arg) {
 
-        if (args[0] == null || args.length > 1) {
-            System.out.println("Error!");
+        if (arg.isEmpty() || arg == null) {
+            workingDirectory = ROOT;
+        } else if (arg.equals("..")) {
+            if (workingDirectory.equals(ROOT)) {
+                System.out.println("Error!");
+                return;
+            }
+            workingDirectory = workingDirectory.ylihakemisto();
         } else {
-            if (args[0].isEmpty()) {
-                workingDirectory = ROOT;
-            } else if (args[0].equals("..")) {
-                if (workingDirectory.equals(ROOT)) {
-                    System.out.println("Error!");
-                    return;
-                }
-                workingDirectory = workingDirectory.ylihakemisto();
-            } else {
-                LinkedList<Tieto> tmp = workingDirectory.hae(args[0]);
+            LinkedList<Tieto> tmp = workingDirectory.hae(arg);
 
-                if (!tmp.isEmpty()) {
-                    if (tmp.getFirst() instanceof Hakemisto) {
-                        workingDirectory = (Hakemisto) workingDirectory.hae(args[0]).getFirst();
-                    } else {
-                        System.out.println("Error!");
-                    }
+            if (!tmp.isEmpty()) {
+                if (tmp.getFirst() instanceof Hakemisto) {
+                    workingDirectory = (Hakemisto) workingDirectory.hae(arg).getFirst();
                 } else {
                     System.out.println("Error!");
                 }
+            } else {
+                System.out.println("Error!");
             }
         }
     }
@@ -64,92 +59,71 @@ public class Tulkki
     /**
      * Create a directory.
      *
-     * @param args array of arguments
+     * @param arg directory name
      * @throws IllegalArgumentException
      */
-    public void createDirectory(String[] args) throws IllegalArgumentException {
+    public void createDirectory(String arg) throws IllegalArgumentException {
 
-        if (args[0] != null
-                && !args[0].isEmpty()
-                && !checkIfExists(args[0])
-                && args.length == 1) {
-            if (args[0].matches(".*#+.*") || args[0].matches("..")) {
-                throw new IllegalArgumentException();
-            }
-
-            String name = args[0];
-            if (workingDirectory.hae(name).isEmpty()) {
-                workingDirectory.lisaa(new Hakemisto(new StringBuilder(name), workingDirectory));
-            }
-        } else {
+        if (arg.matches(".*#+.*") || arg.matches("..")) {
             throw new IllegalArgumentException();
         }
 
+        if (workingDirectory.hae(arg).isEmpty()) {
+            workingDirectory.lisaa(new Hakemisto(new StringBuilder(arg), workingDirectory));
+        }
+
+        /*
+        if (args.length == 2) {
+
+        } else {
+            throw new IllegalArgumentException();
+        }
+        */
     }
 
     /**
      * Creates a file.
      * 
-     * @param args array of arguments
+     * @param args file name and size
      */
     public void createFile(String[] args) throws IllegalArgumentException {
-
-        if (args[0] != null
-                && !args[0].isEmpty()
-                && args.length <= 2
-                && !checkIfExists(args[0])) {
-
-            for (int i = 0; i < args.length; i++) {
-                if (args[i].matches(".*[#%&+-]+.*")) {
-                    throw new IllegalArgumentException();
-                }
-            }
-
-            if (args.length == 2) {
-                String name = args[0];
-                int size = Integer.parseInt(args[1]);
-
-                Tiedosto file = new Tiedosto(new StringBuilder(name), size);
-                workingDirectory.lisaa(file);
-            } else {
+        for (int i = 1; i < args.length; i++) {
+            if (args[i].matches(".*[#%&+-]+.*")) {
                 throw new IllegalArgumentException();
             }
+        }
+
+        if (args.length == 3) {
+            String name = args[1];
+            int size = Integer.parseInt(args[2]);
+
+            Tiedosto file = new Tiedosto(new StringBuilder(name), size);
+            workingDirectory.lisaa(file);
         } else {
             throw new IllegalArgumentException();
         }
-
     }
 
     /**
      * Renames a file.
      * 
-     * @param args array of arguments
+     * @param args current name and new name
      */
     public void rename(String[] args) throws IllegalArgumentException {
-
-        if (!args[0].isEmpty()
-                && !args[1].isEmpty()
-                && args.length == 2
-                && checkIfExists(args[0])
-                && !checkIfExists(args[1])) {
-
-            for (int i = 0; i < args.length; i++) {
-                if (args[i].matches(".*[#?%&+-]+.*")) {
-                    throw new IllegalArgumentException();
-                }
-            }
-
-            List<Tieto> currentName = workingDirectory.hae(args[0]);
-            List<Tieto> newName = workingDirectory.hae(args[1]);
-
-            if (!currentName.isEmpty()) {
-                if (newName.isEmpty()) {
-                    currentName.get(0).nimi(new StringBuilder(args[1]));
-                }
-                workingDirectory.sisalto().sort();
-            } else {
+        for (int i = 1; i < args.length; i++) {
+            if (args[i].matches(".*[#?%&+-]+.*")) {
                 throw new IllegalArgumentException();
             }
+        }
+
+        List<Tieto> currentName = workingDirectory.hae(args[1]);
+        List<Tieto> newName = workingDirectory.hae(args[2]);
+
+        if (!currentName.isEmpty()) {
+            if (newName.isEmpty()) {
+                currentName.get(0).nimi(new StringBuilder(args[2]));
+            }
+            workingDirectory.sisalto().sort();
         } else {
             throw new IllegalArgumentException();
         }
@@ -158,25 +132,21 @@ public class Tulkki
     /**
      * List all files.
      *
-     * @param args array of arguments
+     * @param arg target directoryyyyy
      */
-    public void listDirectory(String[] args) {
+    public void listDirectory(String arg) {
 
-        if (!args[0].isEmpty()) {
-            if (checkIfExists(args[0]) && args.length == 1) {
-
-                LinkedList<Tieto> list = workingDirectory.hae(args[0]);
-
-                if (list != null && list.size() > 0) {
-                    list.forEach(System.out::println);
-                } else if (args[0].equals("*.gif") || args[0].equals("*.txt")) {
-                    System.out.println("Error!");
-                }
-            } else {
-                System.out.println("Error!");
-            }
-        } else {
+        if (arg.isEmpty()) {
             workingDirectory.sisalto().forEach(ls -> System.out.println(ls));
+            return;
+        }
+
+        LinkedList<Tieto> list = workingDirectory.hae(arg);
+
+        if (list != null && list.size() > 0) {
+            list.forEach(System.out::println);
+        } else if (arg.equals("*.gif") || arg.equals("*.txt")) {
+            System.out.println("Error!");
         }
     }
     
@@ -184,24 +154,17 @@ public class Tulkki
      * Deletes a file.
      *
      * @throws IllegalArgumentException
-     * @param args
+     * @param arg target file
      */
-    public void remove(String[] args) throws IllegalArgumentException {
+    public void remove(String arg) throws IllegalArgumentException {
 
-        if (!args[0].isEmpty()
-                && args.length == 1
-                && checkIfExists(args[0])) {
+        LinkedList<Tieto> tmp = workingDirectory.hae(arg);
 
-            LinkedList<Tieto> tmp = workingDirectory.hae(args[0]);
-
-            if (tmp.isEmpty()) {
-                throw new IllegalArgumentException();
-            }
-            for (Tieto item : tmp) {
-                workingDirectory.poista(item);
-            }
-        } else {
+        if (tmp.isEmpty()) {
             throw new IllegalArgumentException();
+        }
+        for (Tieto item : tmp) {
+            workingDirectory.poista(item);
         }
     }
     

@@ -13,7 +13,7 @@ import java.util.*;
 public class UI {
 
     /**
-     * Attributes
+     * Constants
      */
     private final String CHANGEDIR = "cd";
     private final String CREATEDIR = "md";
@@ -22,6 +22,8 @@ public class UI {
     private final String LIST = "ls";
     private final String REMOVE = "rm";
     private final String EXIT = "exit";
+    // Error message
+    private final String ERROR = "Error!";
 
     // UI function
     public void run() {
@@ -48,47 +50,102 @@ public class UI {
             System.out.print(output);
 
             // Read input from the user
-            String temp = In.readString();
+            String tmp = In.readString();
 
             // Split input into command and arguments
-            String[] input = temp.split(" ");
-            
+            String[] input = tmp.split(" ");
+
+            // The first element is the command
             String command = input[0];
-            String[] args = Arrays.copyOfRange(input, 1, input.length - 1);
+
+            // It seems I need to resort to spaghetti code...
+            String arg1 = "";
+            String arg2 = "";
+
+            if (input.length == 2) {
+                arg1 = input[1];
+            } else if (input.length >= 3) {
+                arg1 = input[1];
+                arg2 = input[2];
+            }
 
             switch(command) {
                 case CHANGEDIR:
-                    tulkki.changeDirectory(args);
+                    if (arg1 == null || input.length > 2) {
+                        System.out.println(ERROR);
+                    } else {
+                        tulkki.changeDirectory(arg1);
+                    }
                     break;
                 case CREATEDIR:
-                    try {
-                        tulkki.createDirectory(args);
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Error!");
+                    if (arg1 != null
+                            && !arg1.isEmpty()
+                            && !tulkki.checkIfExists(arg1)
+                            && input.length == 2) {
+
+                        try {
+                            tulkki.createDirectory(arg1);
+                        } catch (IllegalArgumentException e) {
+                            System.out.println(ERROR);
+                        }
+                    } else {
+                        System.out.println(ERROR);
                     }
                     break;
                 case CREATEFILE:
-                    try {
-                        tulkki.createFile(args);
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Error!");
+                    if (arg1 != null
+                            && !arg1.isEmpty()
+                            && input.length <= 3
+                            && !tulkki.checkIfExists(arg1)) {
+
+                        try {
+                            tulkki.createFile(input);
+                        } catch (IllegalArgumentException e) {
+                            System.out.println(ERROR);
+                        }
+                    } else {
+                        System.out.println(ERROR);
                     }
                     break;
                 case RENAME:
-                    try {
-                        tulkki.rename(args);
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Error!");
+                    if (!arg1.isEmpty()
+                            && !arg2.isEmpty()
+                            && input.length == 3
+                            && tulkki.checkIfExists(arg1)
+                            && !tulkki.checkIfExists(arg2)) {
+
+                        try {
+                            tulkki.rename(input);
+                        } catch (IllegalArgumentException e) {
+                            System.out.println(ERROR);
+                        }
+                    } else {
+                        System.out.println(ERROR);
                     }
                     break;
                 case LIST:
-                    tulkki.listDirectory(args);
+                    if (!arg1.isEmpty()) {
+                        if (tulkki.checkIfExists(arg1) && input.length == 2) {
+                            tulkki.listDirectory(arg1);
+                        } else {
+                            System.out.println(ERROR);
+                        }
+                    } else {
+                        tulkki.listDirectory(arg1);
+                    }
                     break;
                 case REMOVE:
-                    try {
-                        tulkki.remove(args);
-                    } catch (Exception e) {
-                        System.out.println("Error!");
+                    if (!arg1.isEmpty()
+                            && input.length == 2
+                            && tulkki.checkIfExists(arg1)) {
+
+                        try {
+                            tulkki.remove(arg1);
+                        } catch (Exception e) {
+                            System.out.println(ERROR);
+                        }
+                    } else {
+                        System.out.println(ERROR);;
                     }
                     break; 
                 case EXIT:
@@ -96,7 +153,7 @@ public class UI {
                     continueExecution = false;
                     break;
                 default:
-                    System.out.println("Error!");
+                    System.out.println(ERROR);
                     break;
             }
         }

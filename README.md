@@ -1,5 +1,3 @@
-## Projektipohja
+# OOPE2 final project: Simple Java shell
 
-# Olio-ohjelmoinnin harjoitustyö
-
-Kaikki uusiksi.
+A very barebones shell implementation in Java developed as the final project for Tampere University object-oriented programming course.
